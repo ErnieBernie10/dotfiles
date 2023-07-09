@@ -4,6 +4,13 @@ local act = wezterm.action
 
 local config = {}
 
+config.window_padding = {
+  left = 2,
+  right = 2,
+  top = 0,
+  bottom = 0,
+}
+
 if wezterm.config_builder then
   config = wezterm.config_builder()
 end
@@ -21,6 +28,8 @@ for i = 1, 8 do
     action = act({ ActivateTab = i - 1 }),
   })
 end
+
+table.insert(mykeys, { key = "R", mods = "ALT", action = wezterm.action.ReloadConfiguration })
 
 table.insert(mykeys, { key = "n", mods = "ALT", action = act({ SpawnTab = "CurrentPaneDomain" }) })
 
@@ -50,8 +59,13 @@ table.insert(mykeys, { key = "q", mods = "ALT", action = act.QuickSelect })
 
 table.insert(mykeys, { key = "s", mods = "ALT", action = act.Search { CaseSensitiveString = '' } })
 
+table.insert(mykeys, { key = "H", mods = "ALT", action = act.AdjustPaneSize { 'Left', 5 } })
+table.insert(mykeys, { key = "J", mods = "ALT", action = act.AdjustPaneSize { 'Down', 5 } })
+table.insert(mykeys, { key = "K", mods = "ALT", action = act.AdjustPaneSize { 'Up', 5 } })
+table.insert(mykeys, { key = "L", mods = "ALT", action = act.AdjustPaneSize { 'Right', 5 } })
 
-config.font = wezterm.font('JetBrains Mono', { weight = 'Medium', italic = false, stretch= 'Normal' })
+
+config.font = wezterm.font('JetBrains Mono', { weight = 'Medium', italic = false, stretch = 'Normal' })
 
 config.harfbuzz_features = {
   'calt=1',
@@ -113,26 +127,26 @@ config.cursor_blink_ease_out = 'Constant'
 config.default_cursor_style = 'BlinkingBlock'
 
 wezterm.on('user-var-changed', function(window, pane, name, value)
-    local overrides = window:get_config_overrides() or {}
-    if name == "ZEN_MODE" then
-        local incremental = value:find("+")
-        local number_value = tonumber(value)
-        if incremental ~= nil then
-            while (number_value > 0) do
-                window:perform_action(wezterm.action.IncreaseFontSize, pane)
-                number_value = number_value - 1
-            end
-            overrides.enable_tab_bar = false
-        elseif number_value < 0 then
-            window:perform_action(wezterm.action.ResetFontSize, pane)
-            overrides.font_size = nil
-            overrides.enable_tab_bar = true
-        else
-            overrides.font_size = number_value
-            overrides.enable_tab_bar = false
-        end
+  local overrides = window:get_config_overrides() or {}
+  if name == "ZEN_MODE" then
+    local incremental = value:find("+")
+    local number_value = tonumber(value)
+    if incremental ~= nil then
+      while (number_value > 0) do
+        window:perform_action(wezterm.action.IncreaseFontSize, pane)
+        number_value = number_value - 1
+      end
+      overrides.enable_tab_bar = false
+    elseif number_value < 0 then
+      window:perform_action(wezterm.action.ResetFontSize, pane)
+      overrides.font_size = nil
+      overrides.enable_tab_bar = true
+    else
+      overrides.font_size = number_value
+      overrides.enable_tab_bar = false
     end
-    window:set_config_overrides(overrides)
+  end
+  window:set_config_overrides(overrides)
 end)
 
 return config

@@ -30,6 +30,8 @@ return {
 				-- config variable is the default configuration table for the setup function call
 				local null_ls = require("null-ls")
 
+				config.default_timeout = 10000;
+
 				-- Check supported formatters and linters
 				-- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/formatting
 				-- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/diagnostics
@@ -47,9 +49,6 @@ return {
 			name = "gruvbox-baby",
 			lazy = true,
 			priority = 1000,
-			config = function(plugin, opts)
-				vim.g.gruvbox_baby_transparent_mode = true
-			end,
 		},
 		{
 			"jlcrochet/vim-razor",
