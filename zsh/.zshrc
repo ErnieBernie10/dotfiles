@@ -101,7 +101,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias emacs="emacsclient -c -a emacs"
 
-PATH=$PATH:$HOME/.local/bin:$HOME/bin:$HOME/.local/share:/var/home/arneb/.local/share/JetBrains/Toolbox/scripts:/home/linuxbrew/.linuxbrew/bin
+PATH=$PATH:$HOME/.local/bin:$HOME/bin:$HOME/.local/share:/var/home/arneb/.local/share/JetBrains/Toolbox/scripts:/home/linuxbrew/.linuxbrew/bin:$HOME/.local/bin
 
 if [[ -n $container ]]; then export ACCENT="⬢  " ; fi
 
