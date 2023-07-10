@@ -11,6 +11,8 @@ config.window_padding = {
   bottom = 0,
 }
 
+config.default_prog = { '/usr/bin/zsh' }
+
 if wezterm.config_builder then
   config = wezterm.config_builder()
 end
