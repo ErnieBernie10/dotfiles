@@ -31,3 +31,6 @@ export HSTR_TIOCSTI=n
 
 # Run twolfson/sexy-bash-prompt
 . ~/.bash_prompt
+
+# Added by zap installation script
+PATH=$PATH:$HOME/.local/bin:$HOME/.local/share/JetBrains/Toolbox/scripts
