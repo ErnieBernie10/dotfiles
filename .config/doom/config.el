@@ -22,6 +22,7 @@
 ;; accept. For example:
 
 
+
 (setq doom-font (font-spec :family "FiraCode Nerd Font" :size 18)
       ;;doom-variable-pitch-font (font-spec :family "ETBembo" :size 18)
       doom-variable-pitch-font (font-spec :family "Alegreya" :size 18))
@@ -48,7 +49,22 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Documents/org")
+;; (after! org
+;;   (setq +org-capture-journal-file
+;;         (expand-file-name "journal.org"  org-directory)
+;;   )
+;;
+;;   (setq org-journal-file-type 'monthly)
+;;
+;;   (setq org-journal-dir org-directory)
+;; )
 
+;; Configure org-journal
+(after! org-journal
+  (setq org-journal-dir "~/Documents/org/journal"
+        org-journal-file-type 'monthly
+        org-journal-file-format "%Y-%m.org"
+        org-journal-encrypt-journal t))
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
