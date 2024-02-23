@@ -33,6 +33,10 @@ return {
             template = "\n*** %<%A> %<%d-%m-%Y>\n**** %<%H:%M>\n%?",
             target = "~/Personal/org/journal/%<%Y-%m>.org",
           },
+          n = {
+            description = "Note",
+            template = "\n** %?",
+          },
         },
       })
     end,
