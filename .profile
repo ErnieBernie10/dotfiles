@@ -30,6 +30,3 @@ fi
 # Added by Toolbox App
 export PATH="$PATH:/home/arne/.local/share/JetBrains/Toolbox/scripts"
 
-
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
