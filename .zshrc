@@ -73,7 +73,7 @@ export ZSH="$HOME/.oh-my-zsh"
 plugins=(git z dotnet zsh-autocomplete zsh-syntax-highlighting zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
-source ./prompt.zsh
+source ./.prompt.zsh
 
 # User configuration
 
