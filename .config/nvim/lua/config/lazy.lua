@@ -6,10 +6,21 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
+-- Lua equivalent
+vim.api.nvim_exec(
+  [[
+  autocmd BufNewFile,BufRead *.cshtml set filetype=html.cshtml.razor
+  autocmd BufNewFile,BufRead *.razor set filetype=html.cshtml.razor
+]],
+  false
+)
+
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+    { import = "lazyvim.plugins.extras.lang.omnisharp" },
+    { import = "lazyvim.plugins.extras.dap" },
     -- import any extras modules here
     -- { import = "lazyvim.plugins.extras.lang.typescript" },
     -- { import = "lazyvim.plugins.extras.lang.json" },
