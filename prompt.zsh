@@ -1,10 +1,10 @@
 # my_custom_theme.zsh
 
 # Check if the DISTROBOX environment variable is set
-if [[ -n CONTAINER_ID ]]; then
-    CONTAINER_ICON="%{$fg[green]%}■%{$reset_color%} "  # Docker container icon
-else
+if [[ -z "$CONTAINER_ID" ]]; then
     CONTAINER_ICON=""
+else
+    CONTAINER_ICON="%{$fg[green]%}■%{$reset_color%} "  # Docker container icon
 fi
 
 PROMPT="%(?:%{$fg_bold[green]%}%1{➜%} :%{$fg_bold[red]%}%1{➜%} )$CONTAINER_ICON%{$fg[cyan]%}%c%{$reset_color%}"
