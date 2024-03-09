@@ -1,0 +1,7 @@
+[Unit]
+Description=Restic Backup Service
+
+[Service]
+Type=simple
+ExecStart=/home/arneb/.local/bin/backup
+

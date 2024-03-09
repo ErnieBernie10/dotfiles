@@ -102,7 +102,7 @@ source $HOME/.prompt.zsh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # Created by `pipx` on 2024-02-28 18:58:55
-export PATH="$PATH:/home/arne/.local/bin"
+export PATH="$PATH:$HOME/.local/bin"
 
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
