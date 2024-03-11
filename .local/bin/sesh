@@ -1,1 +1,2 @@
-tmux attach-session -t "$(basename "$(pwd)")" || tmux new-session -s "$(basename "$(pwd)")"
+zellij -s "$(basename "$(pwd)")" || zellij a "$(basename "$(pwd)")"
+
