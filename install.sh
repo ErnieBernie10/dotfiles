@@ -10,3 +10,5 @@ systemctl --user daemon-reload
 
 systemctl --user start backup_timer.timer
 systemctl --user enable backup_timer.timer
+
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
