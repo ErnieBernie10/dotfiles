@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SESSION_NAME=$(basename "$PWD")
-LAYOUT_NAME=${1:-"ide"}
+LAYOUT_NAME=${1:-"default"}
 
 # Check if the session already exists
 if zellij list-sessions | grep -q "$SESSION_NAME"; then
@@ -9,5 +9,9 @@ if zellij list-sessions | grep -q "$SESSION_NAME"; then
 	zellij attach "$SESSION_NAME"
 else
 	# If it doesn't exist, create a new session with the specified layout
-	zellij -s "$SESSION_NAME" --layout "$HOME/.config/zellij/layouts/$LAYOUT_NAME.kdl"
+	if [ $LAYOUT_NAME == "default" ]; then
+		zellij -s "$SESSION_NAME"
+	else
+		zellij -s "$SESSION_NAME" --layout "$HOME/.config/zellij/layouts/$LAYOUT_NAME.kdl"
+	fi
 fi

@@ -99,4 +99,7 @@ export NVM_DIR="$HOME/.config/nvm"
 
 alias box='distrobox enter'
 
-fastfetch
+# When in zellij session don't run fastfetch
+if [ -z "$ZELLIJ" ]; then
+  fastfetch
+fi
