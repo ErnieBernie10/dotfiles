@@ -72,6 +72,8 @@ export ZSH="$HOME/.oh-my-zsh"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git z dotnet zsh-autocomplete zsh-syntax-highlighting zsh-autosuggestions)
 
+bindkey '^ ' autosuggest-accept
+
 source $ZSH/oh-my-zsh.sh
 source $HOME/.prompt.zsh
 
@@ -99,7 +101,4 @@ export NVM_DIR="$HOME/.config/nvm"
 
 alias box='distrobox enter'
 
-# When in zellij session don't run fastfetch
-if [ -z "$ZELLIJ" ]; then
-  fastfetch
-fi
+export DISABLE_AUTO_TITLE='true'

@@ -55,7 +55,11 @@ keybinds {
         bind "Enter" "Esc" "Space" { SwitchToMode "normal"; }
         bind "h" "Left" { GoToPreviousTab; }
         bind "l" "Right" { GoToNextTab; }
-        bind "n" { NewTab; }
+        bind "n" {
+            NewTab {
+                layout "default"
+            }
+        }
         bind "x" { CloseTab; }
         bind "s" { ToggleActiveSyncTab; }
         bind "Alt h" { MoveFocus "Left"; }
@@ -132,7 +136,6 @@ keybinds {
     }
     session clear-defaults=true {
         bind "Alt o" { SwitchToMode "Normal"; }
-        bind "Alt s" { SwitchToMode "Scroll"; }
         bind "d" { Detach; }
         bind "w" {
             LaunchOrFocusPlugin "zellij:session-manager" {
