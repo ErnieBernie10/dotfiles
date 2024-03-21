@@ -102,3 +102,5 @@ export NVM_DIR="$HOME/.nvm"
 alias box='distrobox enter'
 
 export DISABLE_AUTO_TITLE='true'
+
+eval "$(atuin init zsh)"
