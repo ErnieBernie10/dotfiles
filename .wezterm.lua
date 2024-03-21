@@ -29,6 +29,19 @@ return {
 		top = 3,
 		bottom = 3,
 	},
+	-- skip_close_confirmation_for_processes_named = {
+	-- 	"bash",
+	-- 	"sh",
+	-- 	"zsh",
+	-- 	"fish",
+	-- 	"tmux",
+	-- 	"nu",
+	-- 	"cmd.exe",
+	-- 	"pwsh.exe",
+	-- 	"powershell.exe",
+	-- 	"distrobox",
+	-- },
+	window_close_confirmation = "NeverPrompt",
 
 	inactive_pane_hsb = {
 		saturation = 0.9,
@@ -65,6 +78,25 @@ return {
 	-- change here to key="b", mods="CMD" for ^+b equivalent in tmux.
 	-- leader = { key = "META", mods = "NONE", timeout_milliseconds = 1000 },
 	keys = {
+		{
+			key = "d",
+			mods = "ALT",
+			action = wezterm.action_callback(function(win, pane)
+				local is_distrobox_var = pane:get_user_vars()["distrobox"]
+				if is_distrobox_var ~= "" then
+					win:perform_action(
+						wezterm.action({
+							SpawnCommandInNewTab = {
+								args = { "distrobox", "enter", is_distrobox_var },
+							},
+						}),
+						pane
+					)
+				else
+					win:perform_action(wezterm.action({ SpawnTab = "CurrentPaneDomain" }), pane)
+				end
+			end),
+		},
 		{ key = "LeftArrow", mods = "OPT", action = act.SendString("\x1bb") },
 		{ key = "RightArrow", mods = "OPT", action = act.SendString("\x1bf") },
 
@@ -77,8 +109,46 @@ return {
 
 		-- Window management
 		{ key = "a", mods = "ALT", action = act({ SendString = "`" }) },
-		{ key = "-", mods = "ALT", action = act({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
-		{ key = "\\", mods = "ALT", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
+		{
+			key = "-",
+			mods = "ALT",
+			action = wezterm.action_callback(function(win, pane)
+				local is_distrobox_var = pane:get_user_vars()["distrobox"]
+				if is_distrobox_var ~= "" then
+					win:perform_action(
+						wezterm.action({
+							SplitVertical = {
+								args = { "distrobox", "enter", is_distrobox_var },
+							},
+						}),
+						pane
+					)
+				else
+					-- act.SplitVertical({ domain = "CurrentPaneDomain" })
+					win:perform_action(wezterm.action({ SplitVertical = {} }), pane)
+				end
+			end),
+		},
+		{
+			key = "\\",
+			mods = "ALT",
+			action = wezterm.action_callback(function(win, pane)
+				local is_distrobox_var = pane:get_user_vars()["distrobox"]
+				if is_distrobox_var ~= "" then
+					win:perform_action(
+						wezterm.action({
+							SplitHorizontal = {
+								args = { "distrobox", "enter", is_distrobox_var },
+							},
+						}),
+						pane
+					)
+				else
+					-- act.SplitHorizontal({ domain = "CurrentPaneDomain" })
+					win:perform_action(wezterm.action({ SplitHorizontal = {} }), pane)
+				end
+			end),
+		},
 		{ key = "z", mods = "ALT", action = "TogglePaneZoomState" },
 		{ key = "c", mods = "ALT", action = act({ SpawnTab = "CurrentPaneDomain" }) },
 
@@ -204,4 +274,10 @@ return {
 			{ key = "u", mods = "CTRL", action = act.CopyMode("ClearPattern") },
 		},
 	},
+	-- launch_menu = {
+	-- 	{
+	-- 		label = "New distrobox booking tab",
+	-- 		args = { "distrobox", "enter", "booking" },
+	-- 	},
+	-- },
 }
