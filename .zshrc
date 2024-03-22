@@ -105,13 +105,7 @@ export DISABLE_AUTO_TITLE='true'
 
 eval "$(atuin init zsh)"
 
-
-# if [[ -z "$CONTAINER_ID" ]]; then
-#     export IS_DISTROBOX=0
-# else
-#     export IS_DISTROBOX=1
-# fi
-
+# Required to make wezterm work the way I want
 if [ "$TERM" != "linux" -a "$TERM" != "dumb" ]; then
     printf "\033]1337;SetUserVar=%s=%s\007" distrobox `echo -n $CONTAINER_ID | base64`
 fi

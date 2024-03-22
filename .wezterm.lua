@@ -13,6 +13,23 @@ wezterm.on("gui-startup", function()
 	window:gui_window():maximize()
 end)
 
+local persisted_action = function(action)
+	return function(win, pane)
+		local is_distrobox_var = pane:get_user_vars()["distrobox"]
+		if is_distrobox_var ~= "" then
+			win:perform_action(
+				wezterm.action[action]({
+					args = { "distrobox", "enter", is_distrobox_var },
+				}),
+				pane
+			)
+		else
+			-- act.SplitHorizontal({ domain = "CurrentPaneDomain" })
+			win:perform_action(wezterm.action[action], pane)
+		end
+	end
+end
+
 return {
 	check_for_updates = true,
 	term = "xterm-256color",
@@ -81,21 +98,7 @@ return {
 		{
 			key = "d",
 			mods = "ALT",
-			action = wezterm.action_callback(function(win, pane)
-				local is_distrobox_var = pane:get_user_vars()["distrobox"]
-				if is_distrobox_var ~= "" then
-					win:perform_action(
-						wezterm.action({
-							SpawnCommandInNewTab = {
-								args = { "distrobox", "enter", is_distrobox_var },
-							},
-						}),
-						pane
-					)
-				else
-					win:perform_action(wezterm.action({ SpawnTab = "CurrentPaneDomain" }), pane)
-				end
-			end),
+			action = wezterm.action_callback(persisted_action("SpawnCommandInNewTab")),
 		},
 		{ key = "LeftArrow", mods = "OPT", action = act.SendString("\x1bb") },
 		{ key = "RightArrow", mods = "OPT", action = act.SendString("\x1bf") },
@@ -112,45 +115,20 @@ return {
 		{
 			key = "-",
 			mods = "ALT",
-			action = wezterm.action_callback(function(win, pane)
-				local is_distrobox_var = pane:get_user_vars()["distrobox"]
-				if is_distrobox_var ~= "" then
-					win:perform_action(
-						wezterm.action({
-							SplitVertical = {
-								args = { "distrobox", "enter", is_distrobox_var },
-							},
-						}),
-						pane
-					)
-				else
-					-- act.SplitVertical({ domain = "CurrentPaneDomain" })
-					win:perform_action(wezterm.action({ SplitVertical = {} }), pane)
-				end
-			end),
+			action = wezterm.action_callback(persisted_action("SplitVertical")),
 		},
 		{
 			key = "\\",
 			mods = "ALT",
-			action = wezterm.action_callback(function(win, pane)
-				local is_distrobox_var = pane:get_user_vars()["distrobox"]
-				if is_distrobox_var ~= "" then
-					win:perform_action(
-						wezterm.action({
-							SplitHorizontal = {
-								args = { "distrobox", "enter", is_distrobox_var },
-							},
-						}),
-						pane
-					)
-				else
-					-- act.SplitHorizontal({ domain = "CurrentPaneDomain" })
-					win:perform_action(wezterm.action({ SplitHorizontal = {} }), pane)
-				end
-			end),
+			action = wezterm.action_callback(persisted_action("SplitHorizontal")),
 		},
 		{ key = "z", mods = "ALT", action = "TogglePaneZoomState" },
 		{ key = "c", mods = "ALT", action = act({ SpawnTab = "CurrentPaneDomain" }) },
+		{
+			key = "f",
+			mods = "ALT",
+			action = act.TogglePaneZoomState,
+		},
 
 		{ key = "h", mods = "ALT", action = act.ActivatePaneDirection("Left") },
 		{ key = "j", mods = "ALT", action = act.ActivatePaneDirection("Down") },
@@ -173,7 +151,7 @@ return {
 		{ key = "7", mods = "ALT", action = act({ ActivateTab = 6 }) },
 		{ key = "8", mods = "ALT", action = act({ ActivateTab = 7 }) },
 		{ key = "9", mods = "ALT", action = act({ ActivateTab = 8 }) },
-		{ key = "x", mods = "ALT", action = act({ CloseCurrentPane = { confirm = true } }) },
+		{ key = "x", mods = "ALT", action = act({ CloseCurrentPane = { confirm = false } }) },
 
 		-- Activate Copy Mode
 		{ key = "[", mods = "ALT", action = act.ActivateCopyMode },
