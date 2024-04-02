@@ -85,4 +85,7 @@ return {
       },
     },
   },
+  {
+    "SirVer/ultisnips",
+  },
 }
