@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the restic repository and backup source
-RESTIC_REPO="sftp:arneb@192.168.129.10:/backups"
+RESTIC_REPO="sftp:root@192.168.129.8:/backups"
 BACKUP_SOURCE="/home/arneb"
 
 # Set the RESTIC_PASSWORD environment variable with your Restic repository password
