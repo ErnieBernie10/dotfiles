@@ -39,12 +39,12 @@ return {
 	-- Appearance --
 	----------------
 	window_background_opacity = 0.99,
-	color_scheme = "Tokyo Night",
+	color_scheme = "Gruvbox dark, hard (base16)",
 	window_padding = {
-		left = 3,
-		right = 3,
-		top = 3,
-		bottom = 3,
+		left = 0,
+		right = 0,
+		top = 0,
+		bottom = 0,
 	},
 	-- skip_close_confirmation_for_processes_named = {
 	-- 	"bash",

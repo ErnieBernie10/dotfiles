@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Define the restic repository and backup source
-RESTIC_REPO="sftp:root@192.168.129.8:/backups"
+RESTIC_REPO="sftp:root@192.168.1.8:/backup/pc/suse"
 BACKUP_SOURCE="/home/arneb"
 
 # Set the RESTIC_PASSWORD environment variable with your Restic repository password
 source /home/arneb/.restic-backup
 
 # Run the Restic backup command
-restic -r $RESTIC_REPO backup $BACKUP_SOURCE --tag home
+restic -r $RESTIC_REPO backup $BACKUP_SOURCE --tag home --exclude $BACKUP_SOURCE/.local/share/containers --exclude $BACKUP_SOURCE/.cache --exclude $BACKUP_SOURCE/.local/share/Steam
 
 restic -r $RESTIC_REPO forget \
 	--keep-hourly 24 \
