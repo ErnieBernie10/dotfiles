@@ -19,15 +19,18 @@ return {
           preview_cutoff = 120,
         },
         mappings = {
-          i = {
-            ["<C-n>"] = actions.cycle_history_next,
-            ["<C-p>"] = actions.cycle_history_prev,
-            ["<C-j>"] = actions.move_selection_next,
-            ["<C-k>"] = actions.move_selection_previous,
-          },
           n = { q = actions.close },
         },
       },
     }
+  end,
+  config = function(_, opts)
+    opts.pickers = {}
+
+    for picker, _ in pairs(require("telescope.builtin")) do
+      opts.pickers[picker] = { theme = "ivy" }
+    end
+
+    require("telescope").setup(opts)
   end,
 }

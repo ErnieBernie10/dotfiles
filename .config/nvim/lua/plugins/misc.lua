@@ -1,5 +1,41 @@
 return {
   {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    opts = {
+      popup_mappings = {
+        scroll_down = "<c-n>", -- binding to scroll down inside the popup
+        scroll_up = "<c-p>", -- binding to scroll up inside the popup
+      },
+      defaults = {
+        mode = { "n", "v" },
+        ["g"] = { name = "+goto" },
+        ["gs"] = { name = "+surround" },
+        ["z"] = { name = "+fold" },
+        ["]"] = { name = "+next" },
+        ["["] = { name = "+prev" },
+        ["<leader><tab>"] = { name = "+tabs" },
+        ["<leader>b"] = { name = "+buffer" },
+        ["<leader>c"] = { name = "+code" },
+        ["<leader>f"] = { name = "+file/find" },
+        ["<leader>g"] = { name = "+git" },
+        ["<leader>gh"] = { name = "+hunks" },
+        ["<leader>q"] = { name = "+quit/session" },
+        ["<leader>s"] = { name = "+search" },
+        ["<leader>u"] = { name = "+ui" },
+        ["<leader>w"] = { name = "+windows" },
+        ["<leader>h"] = { name = "+harpoon" },
+        ["<leader>o"] = { name = "+org" },
+        ["<leader>x"] = { name = "+diagnostics/quickfix" },
+      },
+    },
+    config = function(_, opts)
+      local wk = require("which-key")
+      wk.setup(opts)
+      wk.register(opts.defaults)
+    end,
+  },
+  {
     "nvim-lualine/lualine.nvim",
     opts = {
       options = {
@@ -44,28 +80,28 @@ return {
       local harpoon = require("harpoon")
       harpoon:setup({})
 
-      vim.keymap.set("n", "<leader>a", function()
+      vim.keymap.set("n", "<leader>ha", function()
         harpoon:list():append()
       end, { desc = "Append to harpoon" })
-      vim.keymap.set("n", "<M-e>", function()
+      vim.keymap.set("n", "<leader>he", function()
         harpoon.ui:toggle_quick_menu(harpoon:list())
-      end)
+      end, { desc = "Toggle harpoon menu" })
 
-      vim.keymap.set("n", "<leader>1", function()
+      vim.keymap.set("n", "<leader>h1", function()
         harpoon:list():select(1)
-      end)
-      vim.keymap.set("n", "<leader>2", function()
+      end, { desc = "Harpoon 1" })
+      vim.keymap.set("n", "<leader>h2", function()
         harpoon:list():select(2)
-      end)
-      vim.keymap.set("n", "<leader>3", function()
+      end, { desc = "Harpoon 2" })
+      vim.keymap.set("n", "<leader>h3", function()
         harpoon:list():select(3)
-      end)
-      vim.keymap.set("n", "<leader>4", function()
+      end, { desc = "Harpoon 3" })
+      vim.keymap.set("n", "<leader>h4", function()
         harpoon:list():select(4)
-      end)
-      vim.keymap.set("n", "<leader>5", function()
+      end, { desc = "Harpoon 4" })
+      vim.keymap.set("n", "<leader>h5", function()
         harpoon:list():select(5)
-      end)
+      end, { desc = "Harpoon 5" })
 
       -- Toggle previous & next buffers stored within Harpoon list
       vim.keymap.set("n", "<M-p>", function()
@@ -84,11 +120,5 @@ return {
         branch = "harpoon2",
       },
     },
-  },
-  { "honza/vim-snippets", dependencies = {
-    "SirVer/ultisnips",
-  } },
-  {
-    "SirVer/ultisnips",
   },
 }

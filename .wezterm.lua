@@ -65,15 +65,12 @@ return {
 		brightness = 0.7,
 	},
 
-	initial_rows = 50,
-	initial_cols = 140,
-
-	use_fancy_tab_bar = false,
+	use_fancy_tab_bar = true,
 	hide_tab_bar_if_only_one_tab = true,
-	tab_bar_at_bottom = true,
+	tab_bar_at_bottom = false,
 	-- How many lines of scrollback you want to retain per tab
 	scrollback_lines = 3500,
-	enable_scroll_bar = true,
+	enable_scroll_bar = false,
 
 	-----------
 	-- Fonts --
