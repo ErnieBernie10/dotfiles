@@ -39,7 +39,7 @@ return {
 	-- Appearance --
 	----------------
 	window_background_opacity = 0.99,
-	color_scheme = "Gruvbox dark, hard (base16)",
+	-- color_scheme = "Gruvbox dark, hard (base16)",
 	window_padding = {
 		left = 0,
 		right = 0,

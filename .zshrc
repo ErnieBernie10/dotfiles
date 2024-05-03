@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
+# export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -65,17 +65,25 @@ export ZSH="$HOME/.oh-my-zsh"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+# plugins=(git z dotnet zsh-autocomplete zsh-autosuggestions zsh-syntax-highlighting)
+
+source ~/.oh-my-zsh/oh-my-zsh.sh
+source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.zsh/plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+source ~/.oh-my-zsh/plugins/git/git.plugin.zsh
+source ~/.oh-my-zsh/plugins/z/z.plugin.zsh
+# source ~/.oh-my-zsh/plugins/git-prompt/git-prompt.plugin.zsh
+
+bindkey '^ ' autosuggest-accept
+
+source $HOME/.prompt.zsh
+
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git z dotnet zsh-autocomplete zsh-autosuggestions)
-
-bindkey '^ ' autosuggest-accept
-
-source $ZSH/oh-my-zsh.sh
-source $HOME/.prompt.zsh
 
 # User configuration
 
