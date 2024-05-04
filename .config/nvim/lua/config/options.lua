@@ -6,3 +6,8 @@ local opt = vim.opt
 
 opt.cmdheight = 0
 opt.laststatus = 1
+
+vim.g.netrw_keepdir = 0
+vim.g.netrw_banner = 0
+vim.g.netrw_altv = 1
+vim.g.netrw_winsize = 25
