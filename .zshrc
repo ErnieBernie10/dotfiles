@@ -107,8 +107,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-alias box='distrobox enter'
-
 export DISABLE_AUTO_TITLE='true'
 
 eval "$(atuin init zsh)"
@@ -118,3 +116,8 @@ if [ "$TERM" != "linux" -a "$TERM" != "dumb" ]; then
     printf "\033]1337;SetUserVar=%s=%s\007" distrobox `echo -n $CONTAINER_ID | base64`
 fi
 
+# Aliases
+alias box='distrobox enter'
+alias cd='z'
+alias vim='nvim'
+alias v='nvim'
