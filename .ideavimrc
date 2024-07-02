@@ -1,0 +1,21 @@
+let mapleader = "\<Space>"
+
+nnoremap x _d
+nnoremap xw _dw
+nnoremap xx _dd
+
+map <leader>ca :action ShowIntentionActions<CR>
+map <leader>ca :action ShowIntentionActions<CR>
+map <leader>gd :action GotoImplementation<CR>
+
+" Toggle the Project (Solution) Explorer
+map <C-e> :action ActivateProjectToolWindow<CR>
+
+" Collapse all nodes in the Project Explorer
+map <C-c> :action CollapseAll<CR>
+
+" Select next pane in the Project Explorer
+map <C-n> :action SelectNextProjectViewPane<CR>
+
+" Select previous pane in the Project Explorer
+map <C-p> :action SelectPreviousProjectViewPane<CR>

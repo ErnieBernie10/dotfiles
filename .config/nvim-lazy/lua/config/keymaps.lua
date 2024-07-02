@@ -28,14 +28,8 @@ vim.keymap.set("n", "<leader>zv", "<cmd>Telekasten switch_vault<CR>")
 -- Call insert link automatically when we start typing a link
 vim.keymap.set("i", "[[", "<cmd>Telekasten insert_link<CR>")
 
-vim.keymap.set("n", "<leader>e", function()
-  if vim.bo.filetype == "netrw" then
-    vim.cmd("bd") -- Close netrw if it's open
-  else
-    vim.cmd("Explore %:p:h") -- Open file explorer
-  end
-end)
-
 vim.keymap.set("n", "x", '"_d')
 vim.keymap.set("n", "xw", '"_dw')
 vim.keymap.set("n", "xx", '"_dd')
+
+vim.keymap.set("n", "<leader>e", "<cmd>Oil<CR>")

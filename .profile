@@ -24,3 +24,7 @@ test -z "$PROFILEREAD" && . /etc/profile || true
 #    echo
 #fi
 . "$HOME/.cargo/env"
+
+# >>> coursier install directory >>>
+export PATH="$PATH:/home/arneb/.local/share/coursier/bin"
+# <<< coursier install directory <<<

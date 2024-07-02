@@ -101,15 +101,19 @@ source $HOME/.prompt.zsh
 
 export EDITOR='nvim'
 
-export PATH="$PATH:$HOME/.local/bin:$HOME/.bin"
+export PATH="$PATH:$HOME/.local/bin:$HOME/.bin:$HOME/.local/share/JetBrains/Toolbox/scripts"
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+if command -v atuin &> /dev/null
+then
+  eval "$(atuin init zsh)"
+fi
+
+if command -v /home/linuxbrew/.linuxbrew/bin/brew &> /dev/null
+then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
 
 export DISABLE_AUTO_TITLE='true'
-
-eval "$(atuin init zsh)"
 
 # Required to make wezterm work the way I want
 if [ "$TERM" != "linux" -a "$TERM" != "dumb" ]; then
@@ -121,3 +125,7 @@ alias box='distrobox enter'
 alias cd='z'
 alias vim='nvim'
 alias v='nvim'
+
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
