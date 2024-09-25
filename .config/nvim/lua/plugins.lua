@@ -48,6 +48,8 @@ now(function()
         ensure_installed = { "lua_ls" },
         automatic_installation = false
     })
+    add('MoaidHathot/dotnet.nvim')
+
     require('lang.lua')
 
     require('lang.gleam')
@@ -55,6 +57,8 @@ now(function()
     require('lang.dotnet')
 
     require('lang.metals')
+
+    require('lang.go')
 end)
 later(function()
     add('echasnovski/mini.clue')
@@ -151,4 +155,9 @@ later(function()
     end
 
     require("telescope").setup(opts)
+end)
+
+later(function()
+    add('mistweaverco/kulala.nvim')
+    require('kulala').setup({})
 end)

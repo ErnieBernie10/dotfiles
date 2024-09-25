@@ -6,7 +6,7 @@ end
 
 -- Set up the autocommand for autoformat on save
 vim.api.nvim_create_autocmd("BufWritePre", {
-    pattern = { "*.cs", "*.lua", "*.ts", "*.js" }, -- Apply to all files or specify a filetype like "*.lua"
+    pattern = { "*.cs", "*.lua", "*.ts", "*.js", "*.go", "*.sql" }, -- Apply to all files or specify a filetype like "*.lua"
     callback = function()
         lsp_formatting()
     end,

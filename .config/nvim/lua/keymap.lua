@@ -63,3 +63,5 @@ vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to the left window' })
 vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to the window below' })
 vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to the window above' })
 vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to the right window' })
+
+vim.keymap.set('n', "<F5>", "<cmd>lua require('kulala').run()<cr>", { noremap = true, silent = true })
