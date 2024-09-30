@@ -59,6 +59,8 @@ now(function()
     require('lang.metals')
 
     require('lang.go')
+
+    require('lang.elixir')
 end)
 later(function()
     add('echasnovski/mini.clue')
