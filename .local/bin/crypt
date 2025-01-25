@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# Function to decrypt and edit an existing encrypted file
+decrypt_and_edit() {
+    local file=$1
+    local decrypted_file="${file%.gpg}"
+
+    if [ ! -f "$file" ]; then
+        echo "Error: Encrypted file '$file' not found."
+        return 1
+    fi
+
+    # Decrypt the file
+    gpg -d "$file" > "$decrypted_file" 2>/dev/null
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to decrypt '$file'."
+        return 1
+    fi
+
+    # Edit the decrypted file
+    nvim "$decrypted_file"
+
+    # Re-encrypt the file using cached passphrase
+    gpg --use-agent -c "$decrypted_file" && shred -u "$decrypted_file"
+    if [ $? -eq 0 ]; then
+        echo "File '$file' has been updated and re-encrypted."
+    else
+        echo "Error: Failed to re-encrypt '$file'."
+    fi
+}
+
+# Function to create a new encrypted file
+create_encrypted_file() {
+    local file=$1
+
+    if [ -f "$file.gpg" ]; then
+        echo "Error: Encrypted file '$file.gpg' already exists."
+        return 1
+    fi
+
+    # Create and edit a new file
+    nvim "$file"
+
+    # Encrypt the new file using cached passphrase
+    gpg --use-agent -c "$file" && shred -u "$file"
+    if [ $? -eq 0 ]; then
+        echo "New encrypted file '$file.gpg' has been created."
+    else
+        echo "Error: Failed to encrypt '$file'."
+    fi
+}
+
+# Main script logic
+if [ "$#" -lt 2 ]; then
+    echo "Usage: $0 [edit|create] <file>"
+    exit 1
+fi
+
+action=$1
+file=$2
+
+case $action in
+    edit)
+        decrypt_and_edit "$file"
+        ;;
+    create)
+        create_encrypted_file "$file"
+        ;;
+    *)
+        echo "Error: Unknown action '$action'. Use 'edit' or 'create'."
+        exit 1
+        ;;
+esac

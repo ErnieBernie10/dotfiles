@@ -13,6 +13,7 @@ end)
 now(function() require('mini.statusline').setup() end)
 now(function() require('mini.pairs').setup() end)
 now(function() require('mini.tabline').setup() end)
+now(function() require('mini.icons').setup() end)
 now(function()
     add({ source = 'bluz71/vim-moonfly-colors', name = "moonfly" })
     vim.cmd('colorscheme moonfly')
@@ -25,17 +26,11 @@ later(function() require('mini.pick').setup() end)
 later(function() require('mini.surround').setup() end)
 later(function() require('mini.git').setup() end)
 
--- Use external plugins with `add()`
-now(function()
-    -- Add to current session (install if absent)
-    add('nvim-tree/nvim-web-devicons')
-    require('nvim-web-devicons').setup()
-end)
-
 now(function()
     add('echasnovski/mini.files')
     require('mini.files').setup()
 end)
+now(MiniIcons.tweak_lsp_kind)
 
 now(function()
     -- Supply dependencies near target plugin
@@ -49,6 +44,14 @@ now(function()
         automatic_installation = false
     })
     add('MoaidHathot/dotnet.nvim')
+    require('mason').setup {
+        registries = {
+            'github:mason-org/mason-registry',
+            'github:crashdummyy/mason-registry',
+        },
+    }
+    add('seblj/roslyn.nvim')
+    add('tris203/rzls.nvim')
 
     require('lang.lua')
 
@@ -61,6 +64,11 @@ now(function()
     require('lang.go')
 
     require('lang.elixir')
+end)
+
+now(function()
+    add('https://codeberg.org/esensar/nvim-dev-container')
+    require("devcontainer").setup {}
 end)
 later(function()
     add('echasnovski/mini.clue')
@@ -124,7 +132,6 @@ later(function()
         hooks = { post_checkout = function() vim.cmd('TSUpdate') end },
     })
     require('nvim-treesitter.configs').setup({
-        ensure_installed = { 'lua', 'vimdoc', 'c_sharp', 'scala' },
         highlight = { enable = true },
     })
 end)
@@ -157,9 +164,4 @@ later(function()
     end
 
     require("telescope").setup(opts)
-end)
-
-later(function()
-    add('mistweaverco/kulala.nvim')
-    require('kulala').setup({})
 end)

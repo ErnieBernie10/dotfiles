@@ -1,10 +1,69 @@
 #!/bin/bash
-_dev=$(ls -1 /dev/input/by-id/*event-mouse | tail -1)
-[ -z "${_dev}" ] && echo "Cannot find mouse event device" && exit 1
-echo "Using ${_dev}"
-while [ true ]; do
-	sleep 60
-	/usr/bin/evemu-event ${_dev} --type EV_REL --code REL_X --value 1 --sync
-	/usr/bin/evemu-event ${_dev} --type EV_REL --code REL_X --value -1 --sync
-	echo -n "#"
-done
+
+# Circle radius (in pixels)
+RADIUS=100
+
+# Number of movements around the circle
+MOVEMENTS=36
+
+# Pause duration between movements (seconds)
+PAUSE_DURATION=0.1
+
+# Function to start the ydotoold daemon
+start_daemon() {
+    if ! pgrep -x "ydotoold" >/dev/null; then
+        echo "Starting ydotoold daemon..."
+        sudo ydotoold &
+        sleep 1 # Give the daemon time to start
+    else
+        echo "ydotoold is already running."
+    fi
+}
+
+# Function to stop the ydotoold daemon
+stop_daemon() {
+    if pgrep -x "ydotoold" >/dev/null; then
+        echo "Stopping ydotoold daemon..."
+        sudo pkill -x "ydotoold"
+    else
+        echo "ydotoold is not running."
+    fi
+}
+
+# Ensure ydotool is available
+if ! command -v ydotool &>/dev/null; then
+    echo "Error: ydotool is not installed."
+    exit 1
+fi
+
+# Start the ydotoold daemon
+start_daemon
+
+# Set locale to ensure consistent floating-point behavior
+export LC_NUMERIC=C
+
+# Get the current mouse position
+CURRENT_POSITION=$(ydotool mouse | awk '{print $2, $4}' | tr -d ',y:')
+if [ -z "$CURRENT_POSITION" ]; then
+    echo "Error: Unable to get current mouse position."
+    stop_daemon
+    exit 1
+fi
+
+CURRENT_X=$(echo "$CURRENT_POSITION" | awk '{print $1}')
+CURRENT_Y=$(echo "$CURRENT_POSITION" | awk '{print $2}')
+
+echo "Starting mouse movement from position ($CURRENT_X, $CURRENT_Y)."
+
+# Perform circular motion
+for ((i = 0; i < MOVEMENTS; i++)); do
+    # Calculate angle in radians
+    ANGLE=$(echo "scale=10; 2 * 3.14159 * $i / $MOVEMENTS" | bc)
+
+    # Calculate new absolute X and Y positions
+    NEW_X=$(printf "%.0f" "$(echo "$CURRENT_X + $RADIUS * c($ANGLE)" | bc -l)")
+    NEW_Y=$(printf "%.0f" "$(echo "$CURRENT_Y + $RADIUS * s($ANGLE)" | bc -l)")
+
+    # Move to the new position
+    echo "Moving mouse to ($NEW_X, $NEW_Y)"
+    ydotool mousemove "$NEW_X" "$NEW
