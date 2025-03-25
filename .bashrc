@@ -131,10 +131,9 @@ fi
 
 # Aliases
 alias box='distrobox enter'
-alias vim='nvim'
 alias v='nvim'
 
-export PATH="$PATH:$HOME/.local/bin:$HOME/.bin:$HOME/.local/share/JetBrains/Toolbox/scripts:/usr/local/go/bin:$HOME/.dotnet:$HOME/.dotnet/tools:$HOME/.local/bin/netcoredbg:/opt/nvim-linux64/bin"
+export PATH="$PATH:$HOME/.local/bin:$HOME/.bin:$HOME/.local/share/JetBrains/Toolbox/scripts:/usr/local/go/bin:$HOME/.dotnet:$HOME/.dotnet/tools:$HOME/.local/bin/netcoredbg:/opt/nvim-linux64/bin:$HOME/go/bin:/opt"
 
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -144,3 +143,8 @@ eval "$(oh-my-posh init bash --config $HOME/.config/zen.toml)"
 
 GPG_TTY=`tty`
 export GPG_TTY
+
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)
+. "$HOME/.cargo/env"

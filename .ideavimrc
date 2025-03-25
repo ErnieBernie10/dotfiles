@@ -19,3 +19,6 @@ map <C-n> :action SelectNextProjectViewPane<CR>
 
 " Select previous pane in the Project Explorer
 map <C-p> :action SelectPreviousProjectViewPane<CR>
+
+" map <leader>+Space Toggle open the same window as shift+shift (all)
+map <leader><Space> :action SearchEverywhere<CR>

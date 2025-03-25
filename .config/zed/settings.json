@@ -7,14 +7,19 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "assistant": {
+    "default_model": {
+      "provider": "copilot_chat",
+      "model": "gpt-4o"
+    },
+    "version": "2"
+  },
   "ssh_connections": [
     {
       "host": "go-web-boilerplate.devpod",
       "projects": [
         {
-          "paths": [
-            "/workspace"
-          ]
+          "paths": ["/workspace"]
         }
       ]
     }
@@ -25,6 +30,6 @@
   "theme": {
     "mode": "system",
     "light": "One Light",
-    "dark": "Rosé Pine"
+    "dark": "Ayu Dark"
   }
 }
