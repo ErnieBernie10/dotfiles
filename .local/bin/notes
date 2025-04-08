@@ -16,8 +16,6 @@ mkdir -p "$NOTES_DIR"
 if [ ! -f "$FILEPATH" ]; then
     echo "# $TODAY" > "$FILEPATH"
     echo "Created new daily note: $FILEPATH"
-else
-    echo "Daily note already exists: $FILEPATH"
 fi
 
 # Open the file in the editor
