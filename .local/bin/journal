@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Define the directory and the filename based on today's date
+DIRECTORY=~/Documents/Notes/Journal
+FILENAME="$(date +%Y-%m-%d).md.age"
+ENCRYPTED_FILE="$DIRECTORY/$FILENAME"
+DECRYPTED_FILE="$(mktemp)"
+
+# Check if the directory exists, create it if it doesn't
+mkdir -p "$DIRECTORY"
+
+# Check if the encrypted file exists
+if [ -f "$ENCRYPTED_FILE" ]; then
+    # Decrypt the file using the passphrase
+    age -d - < "$ENCRYPTED_FILE" > "$DECRYPTED_FILE"
+else
+    # If it doesn't exist, create a new file
+    echo "Creating new diary entry: $FILENAME"
+    touch "$DECRYPTED_FILE"  # Create an empty decrypted file
+    read -sp "Enter password for new file: " PASSWORD
+    echo
+fi
+
+if [ ! -s "$DECRYPTED_FILE" ]; then
+    echo -e "# $(date +%Y-%m-%d)\n" >> "$DECRYPTED_FILE"
+fi
+
+# Open the decrypted file in Neovim
+nvim "$DECRYPTED_FILE"
+
+# Re-encrypt the contents after editing
+echo "$PASSWORD" | age -p - < "$DECRYPTED_FILE" > "$ENCRYPTED_FILE"
+
+# Clean up the temporary decrypted file
+rm "$DECRYPTED_FILE"
+
