@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Configurable editor (change to your preferred one)
+EDITOR="nvim"
+
+# Define path
+NOTES_DIR=~/Documents/Notes/Daily
+TODAY=$(date +"%Y-%m-%d")
+FILENAME="$TODAY.md"
+FILEPATH="$NOTES_DIR/$FILENAME"
+
+# Create directory if it doesn't exist
+mkdir -p "$NOTES_DIR"
+
+# Create file if it doesn't exist and add title
+if [ ! -f "$FILEPATH" ]; then
+    echo "# $TODAY" > "$FILEPATH"
+    echo "Created new daily note: $FILEPATH"
+else
+    echo "Daily note already exists: $FILEPATH"
+fi
+
+# Open the file in the editor
+$EDITOR "$FILEPATH"
+
