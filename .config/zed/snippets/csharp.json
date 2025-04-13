@@ -1,0 +1,38 @@
+{
+  "file_scoped_class": {
+    "prefix": "cls",
+    "body": [
+      "namespace ${1:MyNamespace};",
+      "",
+      "public class ${2:MyClass}",
+      "{",
+      "    $0",
+      "}"
+    ],
+    "description": "File-scoped class"
+  },
+  "file_scoped_struct": {
+    "prefix": "str",
+    "body": [
+      "namespace ${1:MyNamespace};",
+      "",
+      "public struct ${2:MyStruct}",
+      "{",
+      "    $0",
+      "}"
+    ],
+    "description": "File-scoped struct"
+  },
+  "file_scoped_record": {
+    "prefix": "rcd",
+    "body": [
+      "namespace ${1:MyNamespace};",
+      "",
+      "public record ${2:MyRecord}",
+      "{",
+      "    $0",
+      "}"
+    ],
+    "description": "File-scoped record"
+  }
+}
