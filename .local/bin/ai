@@ -3,7 +3,7 @@
 # Define the available commands
 declare -A commands
 commands=(
-    ["commit"]="git commit -e -F <(git diff --cached | fabric -p summarize_git_diff)"
+    ["commit"]="git commit -e -F <(git diff --cached | fabric-ai -p summarize_git_diff)"
     # Add more commands here as needed
 )
 
