@@ -129,6 +129,7 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # Aliases
 alias box='distrobox enter'
+alias ls='eza'
 alias v='nvim'
 
 export PATH="$PATH:$HOME/.local/bin:$HOME/.bin:$HOME/.local/share/JetBrains/Toolbox/scripts:$HOME/.dotnet:$HOME/.dotnet/tools:$HOME/.local/bin/netcoredbg"
@@ -139,3 +140,7 @@ eval "$(oh-my-posh init bash --config $HOME/.config/zen.toml)"
 eval "$(fzf --bash)"
 
 alias fabric='fabric-ai'
+
+export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+

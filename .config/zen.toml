@@ -18,10 +18,38 @@ final_space = true
   newline = true
 
   [[blocks.segments]]
+    type = 'text'
+    template = '{{ .UserName }}'
+    foreground = 'green'
+    background = 'transparent'
+    style = 'plain'
+
+  [[blocks.segments]]
+    type = 'text'
+    template = '@'
+    foreground = 'white'
+    background = 'transparent'
+    style = 'plain'
+
+  [[blocks.segments]]
+    type = 'text'
+    template = '{{ .HostName }}'
+    foreground = 'cyan'
+    background = 'transparent'
+    style = 'plain'
+
+  [[blocks.segments]]
+    type = 'text'
+    template = ':'
+    foreground = 'white'
+    background = 'transparent'
+    style = 'plain'
+
+  [[blocks.segments]]
+    type = 'path'
     template = '{{ .Path }}'
     foreground = 'blue'
     background = 'transparent'
-    type = 'path'
     style = 'plain'
 
     [blocks.segments.properties]
