@@ -17,8 +17,8 @@ echo "==> Sourcing .bashrc..."
 source "$HOME/.bashrc"
 
 echo "==> Installing brew tools..."
-brew install go
-brew install fzf
-brew install fabric-ai
+/home/linuxbrew/.linuxbrew/bin/brew install go
+/home/linuxbrew/.linuxbrew/bin/brew install fzf
+/home/linuxbrew/.linuxbrew/bin/brew install fabric-ai
 
 echo "✅ Done!"
