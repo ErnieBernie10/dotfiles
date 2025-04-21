@@ -125,26 +125,15 @@ if [ "$TERM" != "linux" -a "$TERM" != "dumb" ]; then
     printf "\033]1337;SetUserVar=%s=%s\007" distrobox `echo -n $CONTAINER_ID | base64`
 fi
 
-if command -v program_name &> /dev/null; then
-	eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # Aliases
 alias box='distrobox enter'
 alias v='nvim'
 
-export PATH="$PATH:$HOME/.local/bin:$HOME/.bin:$HOME/.local/share/JetBrains/Toolbox/scripts:/usr/local/go/bin:$HOME/.dotnet:$HOME/.dotnet/tools:$HOME/.local/bin/netcoredbg:/opt/nvim-linux64/bin:$HOME/go/bin:/opt"
-
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export PATH="$PATH:$HOME/.local/bin:$HOME/.bin:$HOME/.local/share/JetBrains/Toolbox/scripts:$HOME/.dotnet:$HOME/.dotnet/tools:$HOME/.local/bin/netcoredbg"
 
 eval "$(oh-my-posh init bash --config $HOME/.config/zen.toml)"
 
-GPG_TTY=`tty`
-export GPG_TTY
-
-
-# Load Angular CLI autocompletion.
-source <(ng completion script)
-. "$HOME/.cargo/env"
+# Set up fzf key bindings and fuzzy completion
+eval "$(fzf --bash)"

@@ -7,10 +7,13 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "features": {
+    "edit_prediction_provider": "zed"
+  },
   "assistant": {
     "default_model": {
-      "provider": "copilot_chat",
-      "model": "gpt-4o"
+      "provider": "mistral",
+      "model": "open-codestral-mamba"
     },
     "version": "2"
   },
@@ -19,7 +22,39 @@
       "host": "go-web-boilerplate.devpod",
       "projects": [
         {
-          "paths": ["/workspace"]
+          "paths": [
+            "/workspace"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "dev",
+      "projects": [
+        {
+          "paths": [
+            "~/Sources"
+          ]
+        },
+        {
+          "paths": [
+            "~/Sources/HistoryLink"
+          ]
+        },
+        {
+          "paths": [
+            "~/Sources/HistoryLink/compose.yaml"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "historylink.devpod",
+      "projects": [
+        {
+          "paths": [
+            "/workspace"
+          ]
         }
       ]
     }

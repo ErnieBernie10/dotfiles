@@ -1,6 +1,7 @@
 .config/github-copilot/apps.json
 .config/systemd/*
 .local/bin/zed
+.local/bin/oh-my-posh
 .config/nushell/history.txt
 
 
