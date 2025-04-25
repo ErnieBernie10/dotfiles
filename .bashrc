@@ -116,7 +116,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-export EDITOR='nvim'
+export EDITOR='hx'
 
 export DISABLE_AUTO_TITLE='true'
 

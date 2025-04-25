@@ -26,7 +26,7 @@ if [ ! -s "$DECRYPTED_FILE" ]; then
 fi
 
 # Open the decrypted file in Neovim
-nvim "$DECRYPTED_FILE"
+$EDITOR "$DECRYPTED_FILE"
 
 # Re-encrypt the contents after editing
 echo "$PASSWORD" | age -p - < "$DECRYPTED_FILE" > "$ENCRYPTED_FILE"
