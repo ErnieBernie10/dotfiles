@@ -10,7 +10,7 @@ else
 fi
 
 echo "==> Installing Homebrew..."
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" -y
 
 # Optional: source .bashrc (only affects current script shell)
 echo "==> Sourcing .bashrc..."
@@ -20,5 +20,7 @@ echo "==> Installing brew tools..."
 /home/linuxbrew/.linuxbrew/bin/brew install go
 /home/linuxbrew/.linuxbrew/bin/brew install fzf
 /home/linuxbrew/.linuxbrew/bin/brew install fabric-ai
+/home/linuxbrew/.linuxbrew/bin/brew install eza
+/home/linuxbrew/.linuxbrew/bin/brew install zoxide
 
 echo "✅ Done!"
