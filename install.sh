@@ -23,4 +23,9 @@ echo "==> Installing brew tools..."
 /home/linuxbrew/.linuxbrew/bin/brew install eza
 /home/linuxbrew/.linuxbrew/bin/brew install zoxide
 
+rm ~/.bashrc
+rm ~/.zshrc
+
+stow .
+
 echo "✅ Done!"
