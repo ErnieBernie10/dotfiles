@@ -139,6 +139,8 @@ eval "$(oh-my-posh init bash --config $HOME/.config/zen.toml)"
 # Set up fzf key bindings and fuzzy completion
 eval "$(fzf --bash)"
 
+eval "$(zoxide init bash)"
+
 alias fabric='fabric-ai'
 
 export LC_CTYPE=en_US.UTF-8

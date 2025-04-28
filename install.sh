@@ -24,6 +24,7 @@ echo "==> Installing brew tools..."
 /home/linuxbrew/.linuxbrew/bin/brew install zoxide
 /home/linuxbrew/.linuxbrew/bin/brew install helix
 /home/linuxbrew/.linuxbrew/bin/brew install age
+/home/linuxbrew/.linuxbrew/bin/brew install stow
 
 rm ~/.bashrc
 rm ~/.zshrc
