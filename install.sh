@@ -28,6 +28,7 @@ echo "==> Installing brew tools..."
 
 rm ~/.bashrc
 rm ~/.zshrc
+rm ~/.gitconfig
 
 /home/linuxbrew/.linuxbrew/bin/stow .
 
