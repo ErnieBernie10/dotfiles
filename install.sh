@@ -29,6 +29,6 @@ echo "==> Installing brew tools..."
 rm ~/.bashrc
 rm ~/.zshrc
 
-stow .
+/home/linuxbrew/.linuxbrew/bin/stow .
 
 echo "✅ Done!"
