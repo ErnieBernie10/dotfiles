@@ -17,7 +17,6 @@ echo "==> Sourcing .bashrc..."
 source "$HOME/.bashrc"
 
 echo "==> Installing brew tools..."
-/home/linuxbrew/.linuxbrew/bin/brew install go
 /home/linuxbrew/.linuxbrew/bin/brew install fzf
 /home/linuxbrew/.linuxbrew/bin/brew install fabric-ai
 /home/linuxbrew/.linuxbrew/bin/brew install eza
@@ -25,6 +24,7 @@ echo "==> Installing brew tools..."
 /home/linuxbrew/.linuxbrew/bin/brew install helix
 /home/linuxbrew/.linuxbrew/bin/brew install age
 /home/linuxbrew/.linuxbrew/bin/brew install stow
+/home/linuxbrew/.linuxbrew/bin/brew install neovim
 
 rm ~/.bashrc
 rm ~/.zshrc
