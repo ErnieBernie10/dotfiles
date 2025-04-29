@@ -5,17 +5,40 @@ return {
     },
     config = function()
         local actions = require('telescope.actions')
-        require('telescope').setup({
+
+        local opts = {
             defaults = {
+                git_worktrees = vim.g.git_worktrees,
+                path_display = { "truncate" },
+                sorting_strategy = "ascending",
+                layout_config = {
+                    horizontal = { prompt_position = "top", preview_width = 0.55 },
+                    vertical = { mirror = false },
+                    width = 0.87,
+                    height = 0.80,
+                    preview_cutoff = 120,
+                },
+                file_ignore_patterns = {
+                    "node_modules"
+                },
+
                 mappings = {
+                    n = { q = actions.close },
                     i = {
                         ["<C-k>"] = actions.move_selection_previous,                       -- move to prev result
                         ["<C-j>"] = actions.move_selection_next,                           -- move to next result
                         ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist, -- send selected to quickfixlist
                     }
-                }
-            }
-        })
+                },
+            },
+        }
+        opts.pickers = {}
+
+        for picker, _ in pairs(require("telescope.builtin")) do
+            opts.pickers[picker] = { theme = "ivy" }
+        end
+
+        require("telescope").setup(opts)
 
         local builtin = require('telescope.builtin')
         vim.keymap.set('n', '<leader>ff', builtin.find_files, {})

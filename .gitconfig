@@ -1,3 +1,5 @@
 [user]
 	email = arne.boedt1@gmail.com
 	name = ErnieBernie10
+[credential]
+        helper = !'/usr/local/bin/devpod' agent git-credentials --port 12049

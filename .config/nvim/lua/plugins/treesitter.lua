@@ -20,6 +20,7 @@ return {
                     "query",
                     "typescript",
                     "tsx",
+                    "php",
                     "yaml",
                     "html",
                     "css",
@@ -33,7 +34,6 @@ return {
                     "dockerfile",
                     "gitignore",
                     "astro",
-                    "c_sharp",
                 },
                 -- auto install above language parsers
                 auto_install = false,
