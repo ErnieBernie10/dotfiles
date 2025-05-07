@@ -1,0 +1,151 @@
+;; Initialize use-package
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+
+;; Evil mode configuration
+(use-package evil
+  :ensure t
+  :init
+  (setq evil-want-integration t)
+  :config
+  (evil-mode 1))
+
+;; Doom themes and UI enhancements
+(use-package doom-themes
+  :ensure t
+  :config
+  (load-theme 'doom-one t)
+  (setq doom-themes-enable-bold t        ;; if nil, bold is universally disabled
+        doom-themes-enable-italic t))    ;; if nil, italics are universally disabled
+
+(use-package doom-modeline
+  :ensure t
+  :config
+  (doom-modeline-mode 1))
+
+;; Nerd Icons
+(use-package all-the-icons
+  :ensure t
+  :config
+  (all-the-icons-install-fonts)
+  (setq all-the-icons-icon-alist
+        all-the-icons-lisp
+        all-the-icons-shadowed))
+
+;; Corfu for completion
+(use-package corfu
+  :ensure t
+  :config
+  (setq corfu-auto t)
+  (setq corfu-cycle t)
+  (global-corfu-mode))
+
+;; Built-in LSP mode for language servers
+(use-package lsp
+  :hook ((c-mode . lsp-mode)
+         (go-mode . lsp-mode)
+         (typescript-mode . lsp-mode))
+  :config
+  (setq lsp-keymap-prefix "C-c l")
+  (setq lsp-prefer-flymake nil))
+
+;; Omnisharp for C#
+(use-package omnisharp
+  :ensure omnisharp-roslyn
+  :config
+  (setq lsp-clients-omnisharp-server-args '("--languageserver" "--hostPID" "(process-id)")))
+
+;; Go language support
+(use-package lsp-mode
+  :config
+  (add-hook 'go-mode-hook #'lsp-mode))
+
+;; TypeScript support
+(use-package lsp-mode
+  :config
+  (add-hook 'typescript-mode-hook #'lsp-mode))
+
+;; Debugger support with built-in DAP mode
+(use-package dap-mode
+  :config
+  (require 'dap-csharp)
+  (require 'dap-go)
+  (require 'dap-typescript)
+  (dap-csharp-setup)
+  (dap-go-setup)
+  (dap-typescript-setup))
+
+;; Company for autocompletion
+(use-package company
+  :ensure t
+  :config
+  (global-company-mode))
+
+;; Company LSP integration
+(use-package company-lsp
+  :config
+  (push 'company-lsp company-backends))
+
+;; Flycheck for syntax checking
+(use-package flycheck
+  :ensure t
+  :config
+  (global-flycheck-mode))
+
+;; Optional: Which-key for discoverable keybindings
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))
+
+;; Optional: Magit for Git integration
+(use-package magit
+  :ensure t
+  :config
+  (global-magit-mode 1))
+
+;; Optional: Projectile for project management
+(use-package projectile
+  :ensure t
+  :config
+  (projectile-mode +1)
+  (setq projectile-completion-system 'ivy))
+
+;; Optional: Ivy for better minibuffer completion
+(use-package ivy
+  :ensure t
+  :config
+  (ivy-mode 1))
+
+;; Optional: Counsel for additional Ivy integration
+(use-package counsel
+  :ensure t
+  :config
+  (counsel-mode))
+
+;; Built-in Tree-sitter support
+(use-package tree-sitter
+  :config
+  (global-tree-sitter-mode))
+
+;; Ensure Tree-sitter languages are installed
+(use-package tree-sitter-langs
+  :config
+  (tree-sitter-langs-install-language-grammars '(c go typescript)))
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages nil))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

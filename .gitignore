@@ -3,5 +3,7 @@
 .local/bin/zed
 .local/bin/oh-my-posh
 .config/nushell/history.txt
+.config/emacs/elpa
+.config/emacs/melpa
 
 

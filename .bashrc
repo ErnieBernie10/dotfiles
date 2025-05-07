@@ -125,14 +125,16 @@ if [ "$TERM" != "linux" -a "$TERM" != "dumb" ]; then
     printf "\033]1337;SetUserVar=%s=%s\007" distrobox `echo -n $CONTAINER_ID | base64`
 fi
 
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+if command -v brew &> /dev/null; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
 
 # Aliases
 alias box='distrobox enter'
 alias ls='eza'
 alias v='nvim'
 
-export PATH="$PATH:$HOME/.local/bin:$HOME/.bin:$HOME/.local/share/JetBrains/Toolbox/scripts:$HOME/.dotnet:$HOME/.dotnet/tools:$HOME/.local/bin/netcoredbg"
+export PATH="$PATH:$HOME/.local/bin:$HOME/.bin:$HOME/.local/share/JetBrains/Toolbox/scripts:$HOME/.dotnet:$HOME/.dotnet/tools:$HOME/.local/bin/netcoredbg:$HOME/.emacs.d/bin:"
 
 eval "$(oh-my-posh init bash --config $HOME/.config/zen.toml)"
 
