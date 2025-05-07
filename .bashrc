@@ -125,7 +125,7 @@ if [ "$TERM" != "linux" -a "$TERM" != "dumb" ]; then
     printf "\033]1337;SetUserVar=%s=%s\007" distrobox `echo -n $CONTAINER_ID | base64`
 fi
 
-if command -v brew &> /dev/null; then
+if command -v /home/linuxbrew/.linuxbrew/bin/brew &> /dev/null; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 

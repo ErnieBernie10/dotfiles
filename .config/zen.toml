@@ -33,7 +33,7 @@ final_space = true
 
   [[blocks.segments]]
     type = 'text'
-    template = '{{ .HostName }}'
+    template = '{{ if env "CONTAINER_ID" }}{{ .HostName }}.{{ env "CONTAINER_ID" }}{{ else }}{{ .HostName }}{{ end }}'
     foreground = 'cyan'
     background = 'transparent'
     style = 'plain'
