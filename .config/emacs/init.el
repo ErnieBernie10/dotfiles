@@ -61,7 +61,6 @@
     :prefix "SPC"
     :global-prefix "C-SPC")
 
-
 (my/leader
   "f"  '(:which-key "file")
   "ff" '(counsel-fzf :which-key "find file")
@@ -78,7 +77,12 @@
   "g"  '(:which-key "git")
   "gs" '(magit-status :which-key "status")
   "e"  '(:which-key "dired")
-  "ee" '(dired-jump :which-key "dired jump")))
+  "ee" '(dired-jump :which-key "dired jump")
+  "g"  '(:which-key "goto")
+  "gd" 'lsp-find-definition
+  "gr" 'lsp-find-references
+  "gi" 'lsp-find-implementation
+  "gt" 'lsp-find-type-definition))
 
 
 
@@ -102,9 +106,9 @@
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode))
 
-(add-to-list 'custom-theme-load-path "~/.config/emacs/themes/doom-moonfly-theme")
+;;(add-to-list 'custom-theme-load-path "~/.config/emacs/themes/doom-moonfly-theme")
 
-(load-theme 'doom-moonfly t)
+;;(load-theme 'doom-moonfly t)
 
 ;; UI cleanup
 (menu-bar-mode -1)
@@ -171,6 +175,26 @@
   (yas-global-mode 1))
 
 ;; LSP
+(setq treesit-language-source-alist
+ '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+   (cmake "https://github.com/uyha/tree-sitter-cmake")
+   (css "https://github.com/tree-sitter/tree-sitter-css")
+   (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+   (go "https://github.com/tree-sitter/tree-sitter-go")
+   (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
+   (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
+   (html "https://github.com/tree-sitter/tree-sitter-html")
+   (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+   (json "https://github.com/tree-sitter/tree-sitter-json")
+   (make "https://github.com/alemuller/tree-sitter-make")
+   (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+   (python "https://github.com/tree-sitter/tree-sitter-python")
+   (toml "https://github.com/tree-sitter/tree-sitter-toml")
+   (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+   (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+   (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+
+
 (defun efs/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
   (lsp-headerline-breadcrumb-mode))
@@ -212,7 +236,8 @@
   (setq typescript-indent-level 2))
 
 (use-package go-mode
-  :hook (go-mode . lsp-deferred))
+  :ensure t
+  :hook (go-mode . lsp-deferred)) ;; this enables LSP in Go files
 
 (use-package csharp-mode
   :mode "\\.cs\\'"
@@ -239,10 +264,24 @@
   :config
   (company-quickhelp-mode 1))
 
+(use-package copilot
+  :ensure t
+  :hook (prog-mode . copilot-mode)
+  :config
+  (define-key copilot-mode-map (kbd "TAB") #'copilot-accept-completion)
+  (define-key copilot-mode-map (kbd "M-[") #'copilot-previous-completion)
+  (define-key copilot-mode-map (kbd "M-]") #'copilot-next-completion)
+  (define-key copilot-mode-map (kbd "C-c C-c") #'copilot-clear-overlay))
+
 
 ;; DAP
-(use-package dap-mode)
-(require 'dap-netcore)
+(use-package dap-mode
+  :ensure t
+  :after lsp-mode
+  :config
+  (dap-auto-configure-mode)
+  (require 'dap-netcore)
+  (require 'dap-dlv-go))
 
 ;;(setq dap-launch-debug-path (concat (projectile-project-root) ".vscode/launch.json"))
 

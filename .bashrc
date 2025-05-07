@@ -134,7 +134,7 @@ alias box='distrobox enter'
 alias ls='eza'
 alias v='nvim'
 
-export PATH="$PATH:$HOME/.local/bin:$HOME/.bin:$HOME/.local/share/JetBrains/Toolbox/scripts:$HOME/.dotnet:$HOME/.dotnet/tools:$HOME/.local/bin/netcoredbg:$HOME/.emacs.d/bin:"
+export PATH="$PATH:$HOME/.local/bin:$HOME/.bin:$HOME/.local/share/JetBrains/Toolbox/scripts:$HOME/.dotnet:$HOME/.dotnet/tools:$HOME/.local/bin/netcoredbg:$HOME/.emacs.d/bin:$HOME/go/bin"
 
 eval "$(oh-my-posh init bash --config $HOME/.config/zen.toml)"
 
