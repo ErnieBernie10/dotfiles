@@ -1,151 +1,372 @@
-;; Initialize use-package
+;; -*- lexical-binding: t; -*-
+;;; init.el — a Neovim‑style Emacs starter config
+
+;;------------------------------------------------------------------------------
+;; Basic package setup & performance tweaks
+;;------------------------------------------------------------------------------
+
+(electric-pair-mode 1)
+;; speed up startup by increasing garbage‑collection threshold:
+(setq gc-cons-threshold (* 50 1000 1000))
+
+(set-face-attribute 'default nil
+                    :family "JetBrainsMono Nerd Font"
+                    :height 120)
+
+;; initialize package sources
+(require 'package)
+(setq package-archives
+      '(("elpa"   . "https://elpa.gnu.org/packages/")
+        ("melpa"  . "https://melpa.org/packages/")))
+(package-initialize)
+
+;; bootstrap use-package
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-
 (require 'use-package)
-(setq use-package-always-ensure t)
+(setq use-package-always-ensure t)    ;; auto‑install missing packages
 
-;; Evil mode configuration
+;; separate customizations
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(load custom-file 'noerror)
+
+;;------------------------------------------------------------------------------
+;; Evil (Vim emulation) & key discovery
+;;------------------------------------------------------------------------------
+
+(setq evil-want-keybinding nil)
+
 (use-package evil
-  :ensure t
   :init
-  (setq evil-want-integration t)
+  (setq evil-want-C-u-scroll t    ;; make C‑u scroll like Vim
+        evil-want-integration t)
   :config
   (evil-mode 1))
 
-;; Doom themes and UI enhancements
-(use-package doom-themes
-  :ensure t
+(use-package evil-collection
+  :after evil
   :config
-  (load-theme 'doom-one t)
-  (setq doom-themes-enable-bold t        ;; if nil, bold is universally disabled
-        doom-themes-enable-italic t))    ;; if nil, italics are universally disabled
+  (evil-collection-init))         ;; bring Evil bindings to more modes
+
+(use-package which-key
+  :config
+  (which-key-mode)                ;; show possible keybindings in popup
+  (setq which-key-idle-delay 0.3))
+
+(use-package general
+  :config
+  (general-create-definer my/leader
+    :states '(normal visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC")
+
+
+(my/leader
+  "f"  '(:which-key "file")
+  "ff" '(counsel-fzf :which-key "find file")
+  "fr" '(counsel-recentf :which-key "recent files")
+  "fc" '(lambda () (interactive)
+          (let ((default-directory user-emacs-directory))
+            (counsel-find-file)))
+  "b"  '(:which-key "buffer")
+  "bb" '(counsel-switch-buffer :which-key "switch buffer")
+  "k"  '(:which-key "kill")
+  "kd" '(kill-buffer :which-key "kill buffer")
+  "p"  '(:which-key "project")
+  "pp" '(projectile-switch-project :which-key "switch project")
+  "g"  '(:which-key "git")
+  "gs" '(magit-status :which-key "status")
+  "e"  '(:which-key "dired")
+  "ee" '(dired-jump :which-key "dired jump")))
+
+
+
+;;------------------------------------------------------------------------------
+;; UI: theme, modeline, icons
+;;------------------------------------------------------------------------------
+
+(use-package nerd-icons
+  :ensure t)
+
+(use-package nerd-icons-dired
+  :hook (dired-mode . nerd-icons-dired-mode))
+
+(use-package nerd-icons-completion
+  :hook (marginalia-mode . nerd-icons-completion-mode))
+
+;;(use-package doom-themes
+;;  :config
+;;  (load-theme 'doom-one t))
 
 (use-package doom-modeline
-  :ensure t
-  :config
-  (doom-modeline-mode 1))
+  :hook (after-init . doom-modeline-mode))
 
-;; Nerd Icons
-(use-package all-the-icons
-  :ensure t
-  :config
-  (all-the-icons-install-fonts)
-  (setq all-the-icons-icon-alist
-        all-the-icons-lisp
-        all-the-icons-shadowed))
+(add-to-list 'custom-theme-load-path "~/.config/emacs/themes/doom-moonfly-theme")
 
-;; Corfu for completion
-(use-package corfu
-  :ensure t
-  :config
-  (setq corfu-auto t)
-  (setq corfu-cycle t)
-  (global-corfu-mode))
+(load-theme 'doom-moonfly t)
 
-;; Built-in LSP mode for language servers
-(use-package lsp
-  :hook ((c-mode . lsp-mode)
-         (go-mode . lsp-mode)
-         (typescript-mode . lsp-mode))
-  :config
-  (setq lsp-keymap-prefix "C-c l")
-  (setq lsp-prefer-flymake nil))
+;; UI cleanup
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(setq inhibit-startup-screen t)
+(setq visible-bell t)  ;; no beeping
 
-;; Omnisharp for C#
-(use-package omnisharp
-  :ensure omnisharp-roslyn
-  :config
-  (setq lsp-clients-omnisharp-server-args '("--languageserver" "--hostPID" "(process-id)")))
 
-;; Go language support
+;;------------------------------------------------------------------------------
+;; Project management & file‑tree
+;;------------------------------------------------------------------------------
+;;; ----- Dired -----
+
+(defun dw/dired-mode-hook ()
+  (interactive)
+  (dired-hide-details-mode 1)
+  (hl-line-mode 1))
+
+(use-package dired
+  :ensure nil
+  :bind (:map dired-mode-map
+              ("b" . dired-up-directory))
+  :config
+  (setq dired-listing-switches "-alv --group-directories-first"
+        dired-omit-files "^\\.[^.].*"
+        dired-omit-verbose nil
+        dired-dwim-target 'dired-dwim-target-next
+        dired-hide-details-hide-symlink-targets nil
+        dired-kill-when-opening-new-dired-buffer t
+        delete-by-moving-to-trash t)
+
+  (add-hook 'dired-mode-hook #'dw/dired-mode-hook))
+
+(use-package projectile
+  :config
+  (projectile-mode 1)                     ;; Enable Projectile for project management
+  (setq projectile-completion-system 'ivy)  ;; Use Ivy for completion in Projectile commands
+  :bind-keymap
+  ("C-c p" . projectile-command-map))    ;; Bind Projectile commands to C-c p
+
+;;------------------------------------------------------------------------------
+;; Completion & minibuffer enhancement
+;;------------------------------------------------------------------------------
+
+(use-package vertico
+  :config
+  (vertico-mode))
+
+(use-package orderless
+  :init
+  (setq completion-styles '(orderless basic)))
+
+(use-package consult
+  :after vertico
+  :config
+  (consult-customize
+   consult-ripgrep :preview-key "C-.") ;; example: live preview with C-.
+  )
+
+;; optionally: YASnippet for snippets
+(use-package yasnippet
+  :config
+  (yas-global-mode 1))
+
+;; LSP
+(defun efs/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
 (use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . efs/lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "C-l")  ;; Or 'C-l', 's-l'
   :config
-  (add-hook 'go-mode-hook #'lsp-mode))
+  (lsp-enable-which-key-integration t)
+  (setq lsp-completion-provider :capf))
 
-;; TypeScript support
-(use-package lsp-mode
+;; Initialize and configure Ivy for efficient completion
+(use-package ivy
+  :diminish
+  :bind (("C-s" . swiper)                         ;; Use Swiper for search (C-s)
+         ("C-x b" . ivy-switch-buffer)            ;; Switch between buffers using Ivy (C-x b)
+         ("M-x" . counsel-M-x)                    ;; Use Counsel for M-x commands (M-x)
+         ("C-x C-f" . counsel-find-file))         ;; Use Counsel for finding files (C-x C-f)
   :config
-  (add-hook 'typescript-mode-hook #'lsp-mode))
+  ;; Enable Ivy globally for completion
+  (ivy-mode 1)                                   
+  ;; Customize Ivy behavior and appearance
+  (setq ivy-use-virtual-buffers t                 ;; Enable virtual buffers (e.g., for Dired)
+        ivy-count-format "(%d/%d) "               ;; Format for counting items
+        ivy-initial-inputs-alist nil))            ;; Disable default initial input for some commands
 
-;; Debugger support with built-in DAP mode
-(use-package dap-mode
+;; Enable Ivy-rich for a prettier and more informative display of completions
+(use-package ivy-rich
+  :after ivy
   :config
-  (require 'dap-csharp)
-  (require 'dap-go)
-  (require 'dap-typescript)
-  (dap-csharp-setup)
-  (dap-go-setup)
-  (dap-typescript-setup))
+  (ivy-rich-mode 1))  ;; Enable Ivy-rich mode for enhanced display of candidates
 
-;; Company for autocompletion
+(use-package typescript-mode
+  :mode "\\.ts\\'"
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 2))
+
+(use-package go-mode
+  :hook (go-mode . lsp-deferred))
+
+(use-package csharp-mode
+  :mode "\\.cs\\'"
+  :hook (csharp-mode . lsp-deferred))
+
+(general-def
+  :states '(normal visual)
+  :keymaps 'lsp-mode-map
+  "K" #'lsp-ui-doc-show) ;; or #'lsp-hover
+
+;; Enable company-mode for completion
 (use-package company
   :ensure t
-  :config
-  (global-company-mode))
+  :hook
+  (after-init . global-company-mode))  ;; Enable company-mode globally
 
-;; Company LSP integration
-(use-package company-lsp
-  :config
-  (push 'company-lsp company-backends))
+(use-package company-box
+  :ensure t
+  :after company
+  :hook (company-mode . company-box-mode))
 
-;; Flycheck for syntax checking
-(use-package flycheck
+(use-package company-quickhelp
   :ensure t
   :config
-  (global-flycheck-mode))
+  (company-quickhelp-mode 1))
 
-;; Optional: Which-key for discoverable keybindings
+
+;; DAP
+(use-package dap-mode)
+(require 'dap-netcore)
+
+;;(setq dap-launch-debug-path (concat (projectile-project-root) ".vscode/launch.json"))
+
+
+;;------------------------------------------------------------------------------
+;; Git: Magit
+;;------------------------------------------------------------------------------
+
+(use-package magit
+  :commands (magit-status)
+  :config
+  (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+;;------------------------------------------------------------------------------
+;; Org‑mode (notes, todo, agendas)
+;;------------------------------------------------------------------------------
+
+(use-package org
+  :config
+  (setq org-startup-indented t
+        org-hide-leading-stars t
+        org-directory "~/Documents/org/"
+        org-default-notes-file (expand-file-name "inbox.org" org-directory)
+        org-agenda-files (append
+                          (list (expand-file-name "inbox.org" org-directory))
+                          (directory-files-recursively (expand-file-name "notes/" org-directory) "\\.org$"))
+        org-refile-targets '((org-agenda-files :maxlevel . 3))
+        org-log-done 'time))
+
+(setq org-capture-templates
+      '(("t" "Todo" entry (file "~/Documents/org/inbox.org")
+         "* TODO %^{Task}\nCaptured: %U\n%?")
+        ("m" "Meeting" entry (file "~/Documents/org/inbox.org")
+         "* %^{Meeting Title}  :meeting:\nCaptured: %U\n%?")
+        ("i" "Idea" entry (file "~/Documents/org/inbox.org")
+         "* %^{Idea Title}  :idea:\nCaptured: %U\n%?")
+        ("k" "Knowledge" entry (file "~/Documents/org/inbox.org")
+         "* %^{Topic}  :knowledge:\nCaptured: %U\n%?")
+        ("n" "Note" entry (file "~/Documents/org/inbox.org")
+         "* %^{Note Title}\nCaptured: %U\n%?")))
+
+(my/leader
+  "o"  '(:which-key "org")
+  "oa" '(org-agenda :which-key "agenda")
+  "oc" '(org-capture :which-key "capture")
+  "ol" '(org-store-link :which-key "store link")
+  "oj" '(lambda () (interactive) (org-capture nil "n")) ;; fast note capture
+  "or" '(org-refile :which-key "refile entry")
+  "of" '(lambda () (interactive)
+          (let ((default-directory "~/Documents/org"))
+            (counsel-rg "" default-directory)))
+  )
+
+(require 'epg)
+
+(defvar my/diary-directory "~/Documents/org/journal/"
+  "Directory where encrypted diary entries are stored.")
+
+(defun my/diary-file-name ()
+  (expand-file-name (format-time-string "%Y-%m-%d.org.gpg") my/diary-directory))
+
+(defun my/secure-diary-entry-epg ()
+  "Open today's encrypted diary entry, decrypting with EPG.
+Encrypts on save using symmetric encryption."
+  (interactive)
+  (let* ((file (my/diary-file-name)))
+    (make-directory my/diary-directory t)
+    (if (file-exists-p file)
+        ;; Decrypt and open
+        (find-file file)
+      ;; New file — create with heading and save encrypted
+      (let ((buffer (find-file file)))
+        (insert (format "# %s\n\n" (format-time-string "%A, %Y-%m-%d")))
+        (save-buffer)
+        buffer))))
+
+;;------------------------------------------------------------------------------
+;; Misc: copy/paste with system, auto‑reload, etc.
+;;------------------------------------------------------------------------------
+
+;; use system clipboard
+(setq select-enable-clipboard t
+      select-enable-primary t)
+
+;; auto‑reload changed files
+(global-auto-revert-mode 1)
+
+(use-package vterm
+  :ensure t)
+(with-eval-after-load 'vterm
+  (define-key vterm-mode-map (kbd "C-c C-c") #'vterm-send-C-c))
+
+(defun my/toggle-vterm ()
+  "Toggle a vterm buffer in a horizontal split at the bottom."
+  (interactive)
+  (let* ((buf-name "*vterm*")
+         (buf (get-buffer buf-name)))
+    (if (and buf (get-buffer-window buf))
+        ;; If visible, delete the window
+        (delete-window (get-buffer-window buf))
+      ;; Else, show in a horizontal split at bottom
+      (let ((window (split-window-vertically -15)))
+        (select-window window)
+        (if buf
+            (switch-to-buffer buf)
+          (vterm))))))
+
+(global-set-key (kbd "C-`") 'my/toggle-vterm)
+
+(use-package eterm-256color
+  :hook (term-mode . eterm-256color-mode))
+
+
+;;------------------------------------------------------------------------------
+;; Final touches
+;;------------------------------------------------------------------------------
+
+;; restore GC threshold after startup
+(add-hook 'emacs-startup-hook
+          (lambda () (setq gc-cons-threshold (* 2 1000 1000))))
+
 (use-package which-key
-  :ensure t
   :config
   (which-key-mode))
 
-;; Optional: Magit for Git integration
-(use-package magit
-  :ensure t
-  :config
-  (global-magit-mode 1))
-
-;; Optional: Projectile for project management
-(use-package projectile
-  :ensure t
-  :config
-  (projectile-mode +1)
-  (setq projectile-completion-system 'ivy))
-
-;; Optional: Ivy for better minibuffer completion
-(use-package ivy
-  :ensure t
-  :config
-  (ivy-mode 1))
-
-;; Optional: Counsel for additional Ivy integration
-(use-package counsel
-  :ensure t
-  :config
-  (counsel-mode))
-
-;; Built-in Tree-sitter support
-(use-package tree-sitter
-  :config
-  (global-tree-sitter-mode))
-
-;; Ensure Tree-sitter languages are installed
-(use-package tree-sitter-langs
-  :config
-  (tree-sitter-langs-install-language-grammars '(c go typescript)))
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages nil))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(provide 'init)
+;;; init.el ends here
