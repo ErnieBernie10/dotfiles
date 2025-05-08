@@ -5,7 +5,33 @@
 ;; Basic package setup & performance tweaks
 ;;------------------------------------------------------------------------------
 
+(use-package visual-fill-column
+  :ensure t)
+
+(defun my/org-mode-visual-settings ()
+  "Enable visual settings for Org mode: soft wrap, centering, no line numbers."
+  (visual-line-mode 1)
+  (setq-local visual-fill-column-width 100
+              visual-fill-column-center-text t)
+  (visual-fill-column-mode 1)
+  (display-line-numbers-mode 0))
+
+(setq evil-respect-visual-line-mode t)
+
+(defun my/org-mode-font-setup ()
+  "Use a custom font for Org mode buffers only."
+  (face-remap-add-relative 'default '(:family "Iosevka Aile" :height 120)))
+
+
+(add-hook 'org-mode-hook #'my/org-mode-visual-settings)
+(add-hook 'org-mode-hook #'my/org-mode-font-setup)
+
 (electric-pair-mode 1)
+(setq display-line-numbers-type 'relative)
+(global-display-line-numbers-mode t)
+
+(setq make-backup-files nil)  ;; Disable creation of backup files
+
 ;; speed up startup by increasing garbage‑collection threshold:
 (setq gc-cons-threshold (* 50 1000 1000))
 
@@ -54,38 +80,6 @@
   (which-key-mode)                ;; show possible keybindings in popup
   (setq which-key-idle-delay 0.3))
 
-(use-package general
-  :config
-  (general-create-definer my/leader
-    :states '(normal visual emacs)
-    :prefix "SPC"
-    :global-prefix "C-SPC")
-
-(my/leader
-  "f"  '(:which-key "file")
-  "ff" '(counsel-fzf :which-key "find file")
-  "fr" '(counsel-recentf :which-key "recent files")
-  "fc" '(lambda () (interactive)
-          (let ((default-directory user-emacs-directory))
-            (counsel-find-file)))
-  "b"  '(:which-key "buffer")
-  "bb" '(counsel-switch-buffer :which-key "switch buffer")
-  "k"  '(:which-key "kill")
-  "kd" '(kill-buffer :which-key "kill buffer")
-  "p"  '(:which-key "project")
-  "pp" '(projectile-switch-project :which-key "switch project")
-  "g"  '(:which-key "git")
-  "gs" '(magit-status :which-key "status")
-  "e"  '(:which-key "dired")
-  "ee" '(dired-jump :which-key "dired jump")
-  "g"  '(:which-key "goto")
-  "gd" 'lsp-find-definition
-  "gr" 'lsp-find-references
-  "gi" 'lsp-find-implementation
-  "gt" 'lsp-find-type-definition))
-
-
-
 ;;------------------------------------------------------------------------------
 ;; UI: theme, modeline, icons
 ;;------------------------------------------------------------------------------
@@ -99,9 +93,9 @@
 (use-package nerd-icons-completion
   :hook (marginalia-mode . nerd-icons-completion-mode))
 
-;;(use-package doom-themes
-;;  :config
-;;  (load-theme 'doom-one t))
+(use-package doom-themes
+  :config
+  (load-theme 'doom-one-light t))
 
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode))
@@ -109,6 +103,8 @@
 ;;(add-to-list 'custom-theme-load-path "~/.config/emacs/themes/doom-moonfly-theme")
 
 ;;(load-theme 'doom-moonfly t)
+
+;;(load-theme 'doom-1337 t)
 
 ;; UI cleanup
 (menu-bar-mode -1)
@@ -129,19 +125,33 @@
   (hl-line-mode 1))
 
 (use-package dired
-  :ensure nil
-  :bind (:map dired-mode-map
-              ("b" . dired-up-directory))
+  :ensure nil ; built-in
+  :commands (dired dired-jump)
+  :custom
+  (dired-listing-switches "-alh --group-directories-first")
+  (dired-dwim-target t) ; smart copy/move target
+  (dired-auto-revert-buffer t)
   :config
-  (setq dired-listing-switches "-alv --group-directories-first"
-        dired-omit-files "^\\.[^.].*"
-        dired-omit-verbose nil
-        dired-dwim-target 'dired-dwim-target-next
-        dired-hide-details-hide-symlink-targets nil
-        dired-kill-when-opening-new-dired-buffer t
-        delete-by-moving-to-trash t)
+  (put 'dired-find-alternate-file 'disabled nil) ; reuse dired buffers
+  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+  (define-key dired-mode-map (kbd "^") (lambda () (interactive) (find-alternate-file "..")))
+  (define-key dired-mode-map (kbd "h") 'dired-up-directory)
+  (define-key dired-mode-map (kbd "l") 'dired-find-file))
 
-  (add-hook 'dired-mode-hook #'dw/dired-mode-hook))
+(use-package dired
+  :ensure nil
+  :after evil
+  :hook (dired-mode . (lambda () (evil-normalize-keymaps)))
+  :config
+  (evil-define-key 'normal dired-mode-map
+    (kbd "h") 'dired-up-directory
+    (kbd "l") 'dired-find-file
+    (kbd "gg") 'beginning-of-buffer
+    (kbd "G") 'end-of-buffer
+    (kbd "q") 'quit-window
+    (kbd "TAB") 'dired-hide-subdir
+    (kbd "za") 'dired-hide-subdir
+    (kbd "gr") 'revert-buffer))
 
 (use-package projectile
   :config
@@ -175,6 +185,8 @@
   (yas-global-mode 1))
 
 ;; LSP
+;; Tree-sitter grammars
+
 (setq treesit-language-source-alist
  '((bash "https://github.com/tree-sitter/tree-sitter-bash")
    (cmake "https://github.com/uyha/tree-sitter-cmake")
@@ -243,16 +255,24 @@
   :mode "\\.cs\\'"
   :hook (csharp-mode . lsp-deferred))
 
-(general-def
-  :states '(normal visual)
-  :keymaps 'lsp-mode-map
-  "K" #'lsp-ui-doc-show) ;; or #'lsp-hover
+(use-package lsp-ui
+  :after lsp-mode
+  :hook (lsp-mode . lsp-ui-mode)
+  :config
+  (setq lsp-ui-doc-enable t
+        lsp-ui-doc-show-with-cursor t
+        lsp-ui-doc-show-with-mouse t
+        lsp-ui-sideline-enable t
+        lsp-ui-sideline-show-hover t))
+
 
 ;; Enable company-mode for completion
 (use-package company
   :ensure t
   :hook
   (after-init . global-company-mode))  ;; Enable company-mode globally
+
+(setq company-backends '(company-capf))
 
 (use-package company-box
   :ensure t
@@ -271,8 +291,12 @@
   (define-key copilot-mode-map (kbd "TAB") #'copilot-accept-completion)
   (define-key copilot-mode-map (kbd "M-[") #'copilot-previous-completion)
   (define-key copilot-mode-map (kbd "M-]") #'copilot-next-completion)
-  (define-key copilot-mode-map (kbd "C-c C-c") #'copilot-clear-overlay))
-
+  (define-key copilot-mode-map (kbd "C-c C-c") #'copilot-clear-overlay)
+  (add-to-list 'copilot-indentation-alist '(prog-mode . 4))
+  (add-to-list 'copilot-indentation-alist '(org-mode . 4))
+  (add-to-list 'copilot-indentation-alist '(text-mode . 4))
+  (add-to-list 'copilot-indentation-alist '(closure-mode . 4))
+  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode . 4)))
 
 ;; DAP
 (use-package dap-mode
@@ -322,18 +346,6 @@
          "* %^{Topic}  :knowledge:\nCaptured: %U\n%?")
         ("n" "Note" entry (file "~/Documents/org/inbox.org")
          "* %^{Note Title}\nCaptured: %U\n%?")))
-
-(my/leader
-  "o"  '(:which-key "org")
-  "oa" '(org-agenda :which-key "agenda")
-  "oc" '(org-capture :which-key "capture")
-  "ol" '(org-store-link :which-key "store link")
-  "oj" '(lambda () (interactive) (org-capture nil "n")) ;; fast note capture
-  "or" '(org-refile :which-key "refile entry")
-  "of" '(lambda () (interactive)
-          (let ((default-directory "~/Documents/org"))
-            (counsel-rg "" default-directory)))
-  )
 
 (require 'epg)
 
@@ -393,6 +405,51 @@ Encrypts on save using symmetric encryption."
 
 (use-package eterm-256color
   :hook (term-mode . eterm-256color-mode))
+
+
+(use-package general
+  :config
+  (general-create-definer my/leader
+    :states '(normal visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC")
+(my/leader
+  "f"  '(:which-key "file")
+  "ff" '(counsel-fzf :which-key "find file")
+  "fr" '(counsel-recentf :which-key "recent files")
+  "fc" '(lambda () (interactive)
+          (let ((default-directory user-emacs-directory))
+            (counsel-find-file)))
+  "b"  '(:which-key "buffer")
+  "bb" '(counsel-switch-buffer :which-key "switch buffer")
+  "k"  '(:which-key "kill")
+  "kb" '(kill-buffer :which-key "kill buffer")
+  "p"  '(:which-key "project")
+  "pp" '(projectile-switch-project :which-key "switch project")
+  "g"  '(:which-key "git")
+  "gs" '(magit-status :which-key "status")
+  "e"  '(:which-key "dired")
+  "ee" '(dired-jump :which-key "dired jump")
+  "o"  '(:which-key "org")
+  "oa" '(org-agenda :which-key "agenda")
+  "oc" '(org-capture :which-key "capture")
+  "ol" '(org-store-link :which-key "store link")
+  "oj" '(lambda () (interactive) (org-capture nil "n")) ;; fast note capture
+  "or" '(org-refile :which-key "refile entry")
+  "of" '(lambda () (interactive)
+         (let ((default-directory "~/Documents/org"))
+            (counsel-rg "" default-directory))))
+  )
+
+(with-eval-after-load 'evil
+  (with-eval-after-load 'go-mode
+    (general-def
+      :states '(normal)
+      :keymaps 'go-mode-map
+      "g d" #'lsp-find-definition
+      "g r" #'lsp-find-references
+      "g i" #'lsp-find-implementation
+      "g t" #'lsp-find-type-definition)))
 
 
 ;;------------------------------------------------------------------------------
